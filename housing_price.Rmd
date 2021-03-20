@@ -1,0 +1,44 @@
+---
+title: "data_exploration"
+author: "Binyam Yilma"
+date: "3/14/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+ ggplot2.continous.colour = "viridis",
+ ggplot2.continous.fill = "viridis"
+)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "100%",
+  warning = F,
+  message = F
+)
+
+
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
+set.seed(2021)
+```
+
+Import data
+```{r}
+data <- read_csv("./data/us_housing_archive/data.csv")
+
+
+#Number of distinct houses
+data %>% 
+  distinct(street, city) %>% 
+  count() %>% 
+  knitr::kable(caption = "n_distinct_houses")
+```
+
