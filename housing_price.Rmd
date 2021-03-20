@@ -7,6 +7,15 @@ output: html_document
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(caret) 
+library(splines)
+library(mgcv) #mainly for the GAM models
+library(pdp) #partial dependent plot
+library(earth) #for the MARS models
+library(tidyverse)
+library(ggplot2)
+library(summarytools)
+
 
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
 
@@ -41,4 +50,70 @@ data %>%
   count() %>% 
   knitr::kable(caption = "n_distinct_houses")
 ```
+
+
+1 - Data study
+2 - Exploratory data analysis
+3 - Feature engineering
+4 - Prediction
+
+
+Data Study
+```{r}
+#Visualize missing data. 
+visdat::vis_miss(data) 
+```
+There are no missing data. 
+
+
+```{r}
+# Data was recorded from May 05, 2014 until July 07, 2014 - over 70 days. 
+data %>% 
+  distinct(date) %>% 
+  summarise(min = min(date),
+            max = max(date),
+            range = n_distinct(date)
+            ) %>% 
+  knitr::kable(caption = "Range of dates ")
+
+```
+
+Feature plot of variables against the outcome - price
+```{r}
+featurePlot(x = data[, 3:14], 
+            y = data$price, 
+            plot = "scatter", 
+            span = .5, 
+            labels = c("Predictors","Y"),
+            type = c("p", "smooth"))
+```
+
+To do:
+
+1 - Drop `street`, `state`, `country`
+2 - Transform `yr_built` & `yr_renovated`, into `house_age` & `yr_since_renovation`
+   - Recode `0` (w/c means house has not been renovated) in `yr_since_renovation` to be equals to the `house_age` 
+3 - Drop `Date`
+4 - Split `state zip` variable into two - drop `state`, keep `zip.`
+5 - Build a data library descrbing what each variables are and how they're coded. 
+6 - Aply box-cox transformation on the outcome variable
+7 - Turn categorical variables - `waterfront`, `view`, `condition` -  in `factors` 
+
+
+Plotting the predictor outcome. 
+
+```{r, include=F}
+data %>% 
+  distinct(statezip) 
+  
+data %>% 
+  distinct(yr_built) 
+
+data %>% 
+  distinct(yr_built, yr_renovated)
+
+data %>% 
+  distinct(view)
+```
+
 
